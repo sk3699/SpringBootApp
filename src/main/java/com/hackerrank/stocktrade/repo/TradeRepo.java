@@ -1,8 +1,11 @@
 package com.hackerrank.stocktrade.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import com.hackerrank.stocktrade.model.Trade;
 
-public abstract class TradeRepo implements JpaRepository<Trade, Long>{
+@Repository
+public interface TradeRepo extends JpaRepository<Trade, Long>{
 	
 }

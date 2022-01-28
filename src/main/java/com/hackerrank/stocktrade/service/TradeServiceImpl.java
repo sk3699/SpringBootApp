@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.hackerrank.stocktrade.model.Trade;
 import com.hackerrank.stocktrade.repo.TradeRepo;
 
+@Service
 public class TradeServiceImpl implements TradeService{
 	
 	@Autowired
