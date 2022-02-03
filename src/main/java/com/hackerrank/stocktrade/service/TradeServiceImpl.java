@@ -1,57 +1,60 @@
 package com.hackerrank.stocktrade.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.hackerrank.stocktrade.model.Trade;
-import com.hackerrank.stocktrade.repo.TradeRepo;
+import com.hackerrank.stocktrade.repo.TradeRepoImpl;
 
 @Service
 public class TradeServiceImpl implements TradeService{
 	
 	@Autowired
-	private TradeRepo traderepo;
+	private TradeRepoImpl traderepoimpl;
 
 	@Override
-	public void eraseall() {
-		traderepo.deleteAll();
+	public ResponseEntity<Trade> sereraseall() {
+		return traderepoimpl.eraseall();
 	}
 
 	@Override
-	public Trade retaddNewTrades() {
+	public String serretaddNewTrades(List<Trade> trade) {
 		// TODO Auto-generated method stub
-		return traderepo.saveAndFlush(null);
+		return traderepoimpl.retaddNewTrades(trade);
 	}
 
 	@Override
-	public Optional<Trade> retfilteredById() {
+	public ResponseEntity<Trade> serretfilteredById(Long Id) {
 		// TODO Auto-generated method stub
-		return traderepo.findById(null);
+		return traderepoimpl.retfilteredById(Id);
 	}
 
 	@Override
-	public List<Trade> retallTrades() {
+	public ResponseEntity<List<Trade>> serretallTrades() {
 		// TODO Auto-generated method stub
-		return traderepo.findAll();
+		return traderepoimpl.retallTrades();
 	}
 
 	@Override
-	public Optional<Trade> retfilteredByUserId() {
+	public ResponseEntity<Trade> serretfilteredByUserId(Long userID) {
 		// TODO Auto-generated method stub
-		return traderepo.findOne(null);
+		return traderepoimpl.retfilteredByUserId(userID);
 	}
 
 	@Override
-	public List<Trade> retfilteredByStockTypeDate() {
+	public List<Trade> serretfilteredByStockTypeDate() {
 		// TODO Auto-generated method stub
-		return traderepo.findAll();
+		return traderepoimpl.retfilteredByStockTypeDate();
 	}
 
 	@Override
-	public void retfilteredByStockDate() {
+	public void serretfilteredByStockDate() {
 		// TODO Auto-generated method stub
 		
 		

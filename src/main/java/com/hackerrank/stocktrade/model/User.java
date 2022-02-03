@@ -1,6 +1,14 @@
 package com.hackerrank.stocktrade.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class User {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     
@@ -12,7 +20,12 @@ public class User {
         this.name = name;
     }
     
-    public Long getId() {
+    public User(String string) {
+		// TODO Auto-generated constructor stub
+    	this.name = string;
+	}
+
+	public Long getId() {
         return this.id;
     }
     

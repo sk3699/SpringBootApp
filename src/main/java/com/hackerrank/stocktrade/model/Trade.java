@@ -2,9 +2,19 @@ package com.hackerrank.stocktrade.model;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class Trade {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String type;
+    @ManyToOne
     private User user;
     private String symbol;
     private Integer shares;
@@ -14,7 +24,7 @@ public class Trade {
     public Trade() {
     }
     
-    public Trade(Long id, String type, User user, String symbol, Integer quantity, Float price, Timestamp timestamp) {
+   /* public Trade(Long id, String type, User user, String symbol, Integer quantity, Float price, Timestamp timestamp) {
         this.id = id;
         this.type = type;
         this.user = user;
@@ -22,9 +32,13 @@ public class Trade {
         this.shares = quantity;
         this.price = price;
         this.timestamp = timestamp;
-    }
+    }*/
     
-    public Long getId() {
+    public Trade(String string, User u2, String string2, int i, float f, Timestamp valueOf) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
         return this.id;
     }
     
