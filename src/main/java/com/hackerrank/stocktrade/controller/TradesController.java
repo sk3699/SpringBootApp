@@ -1,17 +1,15 @@
 package com.hackerrank.stocktrade.controller;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hackerrank.stocktrade.model.Trade;
@@ -53,21 +51,21 @@ public class TradesController {
 	
 	@RequestMapping(value = "/trades/users/{userID}",
 			method = RequestMethod.GET)
-	private ResponseEntity<Trade> filteredByUserId(@PathVariable(value = "userID") Long UserID) {
-		ResponseEntity<Trade> tr = tradeServiceimpl.serretfilteredByUserId(UserID);
+	private ResponseEntity<List<Trade>> filteredByUserId(@PathVariable(value = "userID") Long UserID) {
+		ResponseEntity<List<Trade>> tr = tradeServiceimpl.serretfilteredByUserId(UserID);
 		return tr;
 	}
 	
-	@RequestMapping(value = "/trades/stocks/{stockSymbol}?type={tradeType}&start={startDate}&end={endDate}",
+	@RequestMapping(value = "/trades/stocks/{stockSymbol}",
 			method = RequestMethod.GET)
-	private List<Trade> filteredByStockTypeDate() {
-		List <Trade> trls= tradeServiceimpl.serretfilteredByStockTypeDate();
+	private ResponseEntity<List<Trade>> filteredByStockTypeDate(@PathVariable(value = "stockSymbol") String stocksymbol,@RequestParam(value = "tradeType") String tradeType, @RequestParam(value = "startDate") Timestamp startDate, @RequestParam(value = "endDate") Timestamp endDate) {
+		ResponseEntity<List<Trade>> trls= tradeServiceimpl.serretfilteredByStockTypeDate(stocksymbol,tradeType,startDate,endDate);
 		return trls;
 	}
 	
-	@RequestMapping(value = "/stocks/{stockSymbol}/price?start={startDate}&end={endDate}",
+	@RequestMapping(value = "/stocks/{stockSymbol}/price",
 			method = RequestMethod.GET)
-	private void filteredByStockDate() {
-		tradeServiceimpl.serretfilteredByStockDate();
+	private ResponseEntity<String> filteredByStockDate(@PathVariable(value = "stockSymbol") String stocksymbol, @RequestParam(value = "startDate") Timestamp startDate, @RequestParam(value = "endDate") Timestamp endDate) {
+		return tradeServiceimpl.serretfilteredByStockDate(stocksymbol, startDate, endDate);
 	}
 }

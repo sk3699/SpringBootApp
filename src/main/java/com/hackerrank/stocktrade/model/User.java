@@ -1,12 +1,15 @@
 package com.hackerrank.stocktrade.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+@SuppressWarnings("serial")
 @Entity
-public class User {
+public class User implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,14 +18,18 @@ public class User {
     public User() {
     }
     
-    public User(Long id, String name) {
+    /*public User(Long id, String name) {
         this.id = id;
         this.name = name;
-    }
+    }*/
     
     public User(String string) {
 		// TODO Auto-generated constructor stub
     	this.name = string;
+	}
+
+	public User(long l, String string) {
+		// TODO Auto-generated constructor stub
 	}
 
 	public Long getId() {

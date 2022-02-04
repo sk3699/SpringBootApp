@@ -1,5 +1,6 @@
 package com.hackerrank.stocktrade.repo;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,16 +8,19 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hackerrank.stocktrade.model.Trade;
+import com.hackerrank.stocktrade.model.User;
 
 public class TradeRepoImpl{
 	
 	@Autowired
 	private TradeRepo traderepo;
+	@Autowired
+	private UserRepo userrepo;
 	
 	public ResponseEntity<Trade> eraseall() {
 		traderepo.deleteAll();
@@ -30,6 +34,7 @@ public class TradeRepoImpl{
 		for(Trade t : trade) {
 			Optional<Trade> tr= traderepo.findById(t.getId());
 			if(!tr.isPresent()) {
+				userrepo.save(t.getUser());
 				traderepo.saveAndFlush(t);
 				map.put(t.getId(), HttpStatus.CREATED);
 				//return new ResponseEntity<>(HttpStatus.CREATED);
@@ -45,32 +50,73 @@ public class TradeRepoImpl{
 	public ResponseEntity<Trade> retfilteredById(Long id) {
 		// TODO Auto-generated method stub
 		if(traderepo.findById(id).isPresent()) {
-			return new ResponseEntity<>(traderepo.findById(id).get(), HttpStatus.FOUND);
+			return new ResponseEntity<>(traderepo.findById(id).get(), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+	
+	public ResponseEntity<List<Trade>> retallTrades() {
+		// TODO Auto-generated method stub
+		if(traderepo.count()> 0) {
+			return new ResponseEntity<>(traderepo.findAll(Sort.by(Sort.Direction.ASC, "id")), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	public ResponseEntity<List<Trade>> retfilteredByUserId(Long userID) {
+		//System.out.println("No.Of user obj's "+userrepo.findAll().toString());
+		Optional<User> u = userrepo.findById(userID);
+		if(u.isPresent()) { //&& t.isPresent()
+			List<Trade> t  = traderepo.findAllByUser(u.get());
+			//return new ResponseEntity.of(t, HttpStatus.OK);
+			return new ResponseEntity<>(t, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
-	public ResponseEntity<List<Trade>> retallTrades() {
+	public ResponseEntity<List<Trade>> retfilteredByStockTypeDate(String stocksymbol, String tradeType, Timestamp startDate, Timestamp endDate) {
 		// TODO Auto-generated method stub
-		if(traderepo.count()> 0) {
-			return new ResponseEntity<>(traderepo.findAll(), HttpStatus.OK);
+		List<Trade> tl = traderepo.findAllBySymbolAndType(stocksymbol, tradeType);
+		List<Trade> retTL = new ArrayList<Trade>();
+		if(traderepo.findAllBySymbol(stocksymbol).isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		for(Trade t : tl) {
+			if(t.getTimestamp().after(startDate) && t.getTimestamp().before(endDate) && t.getSymbol().equalsIgnoreCase(stocksymbol)) {
+				retTL.add(t);
+			}
+		}
+		return new ResponseEntity<>(retTL, HttpStatus.OK);
 	}
 
-	public ResponseEntity<Trade> retfilteredByUserId(Long userID) {
+	public ResponseEntity<String> retfilteredByStockDate(String stocksymbol, Timestamp startDate, Timestamp endDate) {
 		// TODO Auto-generated method stub
-		return ResponseEntity.of(traderepo.findById(userID));
-	}
-
-	public List<Trade> retfilteredByStockTypeDate() {
-		// TODO Auto-generated method stub
-		return traderepo.findAll();
-	}
-
-	public void retfilteredByStockDate() {
-		// TODO Auto-generated method stub
+		//List<Trade> t2 = traderepo.findAllBySymbol(stocksymbol);
+		//JSONObject jsonObject= new JSONObject(); 
+		String s = "";
+		Float high = traderepo.highest(stocksymbol,startDate,endDate);
+		Float low = traderepo.lowest(stocksymbol,startDate,endDate);
+		if(traderepo.findAllBySymbol(stocksymbol).isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		s+="{ \n   StockSymbol: "+ stocksymbol+"\n"+
+			"   highest: "+high+",\n"+
+			"   lowest: "+low+",\n";
 		
-		
+		/*for(Trade t : t2) {
+			if(t.getTimestamp().after(startDate) && t.getTimestamp().before(endDate)) {
+				System.out.println("t: "+t.getPrice());
+				if(t.getPrice().equals(high)) {
+					s += "  highest: "+high+",\n";
+				}else if(t.getPrice().equals(low)) {
+					s += "  lowest: "+low+",\n";
+				}
+			}
+		}*/
+		s+="}";
+		if(!s.contains("StockSymbol")) {
+			s = "{\n message: There are no trades in given data range \n}";
+		}
+		return new ResponseEntity<>(s,HttpStatus.OK);
 	}
 }

@@ -1,11 +1,9 @@
 package com.hackerrank.stocktrade.service;
 
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -42,22 +40,22 @@ public class TradeServiceImpl implements TradeService{
 	}
 
 	@Override
-	public ResponseEntity<Trade> serretfilteredByUserId(Long userID) {
+	public ResponseEntity<List<Trade>> serretfilteredByUserId(Long userID) {
 		// TODO Auto-generated method stub
 		return traderepoimpl.retfilteredByUserId(userID);
 	}
 
 	@Override
-	public List<Trade> serretfilteredByStockTypeDate() {
+	public ResponseEntity<List<Trade>> serretfilteredByStockTypeDate(String stocksymbol, String tradeType, Timestamp startDate, Timestamp endDate) {
 		// TODO Auto-generated method stub
-		return traderepoimpl.retfilteredByStockTypeDate();
+		return traderepoimpl.retfilteredByStockTypeDate(stocksymbol, tradeType, startDate, endDate);
 	}
 
 	@Override
-	public void serretfilteredByStockDate() {
+	public ResponseEntity<String> serretfilteredByStockDate(String stocksymbol, Timestamp startDate, Timestamp endDate) {
 		// TODO Auto-generated method stub
-		
-		
+		//List<Trade> t = traderepoimpl.retfilteredByStockDate(stocksymbol, startDate, endDate);
+		return traderepoimpl.retfilteredByStockDate(stocksymbol, startDate, endDate);
 	}
 	
 }
